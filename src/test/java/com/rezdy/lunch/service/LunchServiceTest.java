@@ -3,6 +3,7 @@ package com.rezdy.lunch.service;
 import com.rezdy.lunch.dto.Ingredient;
 import com.rezdy.lunch.dto.Recipe;
 import com.rezdy.lunch.repository.RecipeRepository;
+import javassist.NotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -12,11 +13,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -98,9 +102,8 @@ public class LunchServiceTest {
                 .contains("Expired Milk"));
     }
 
-
     @Test
-    public void testGetNonExpiredRecipesWithUseByOnCurrentDate(){
+    public void testGetNonExpiredRecipesWithUseByOnCurrentDate() {
         List<Recipe> recipeList = Arrays.asList(
                 new Recipe().setTitle("Roast Beef")
                         .setIngredients(Set.of(
@@ -138,5 +141,25 @@ public class LunchServiceTest {
                 .map(Recipe::getTitle)
                 .collect(Collectors.toList())
                 .contains("Expired Milk"));
+    }
+
+    @Test
+    public void testGetRecipe() throws NotFoundException {
+        final Recipe EXPECTED_RECIPE = new Recipe().setTitle("Dumplings");
+        when(recipeRepository.findById(any())).thenReturn(Optional.of(EXPECTED_RECIPE));
+        Recipe recipe = lunchService.getRecipe("Dumplings");
+        assertEquals("Dumplings", recipe.getTitle());
+    }
+
+    @Test
+    public void testGetRecipeNotFound() {
+        try {
+            when(recipeRepository.findById(any())).thenReturn(Optional.ofNullable(null));
+            Recipe recipe = lunchService.getRecipe("Dumplings");
+            fail("NotFoundException not thrown");
+        } catch (NotFoundException e) {
+            assertEquals("Cannot find recipe for 'Dumplings'", e.getMessage());
+        }
+
     }
 }
