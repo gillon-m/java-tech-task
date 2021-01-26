@@ -2,6 +2,7 @@ package com.rezdy.lunch.controller;
 
 import com.rezdy.lunch.dto.Recipe;
 import com.rezdy.lunch.service.LunchService;
+import com.rezdy.lunch.service.LunchServiceImpl;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class LunchController {
     private LunchService lunchService;
 
     @Autowired
-    public LunchController(LunchService lunchService) {
+    public LunchController(LunchServiceImpl lunchService) {
         this.lunchService = lunchService;
     }
 

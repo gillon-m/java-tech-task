@@ -29,7 +29,7 @@ public class LunchServiceTest {
     private RecipeRepository recipeRepository;
 
     @InjectMocks
-    private LunchService lunchService;
+    private LunchServiceImpl lunchService;
 
     @Test
     public void testGetNonExpiredRecipesOnDate() {
@@ -163,7 +163,7 @@ public class LunchServiceTest {
     }
 
     @Test
-    public void testGetRecipesIncludingIngredients(){
+    public void testGetRecipesIncludingIngredients() {
         List<Recipe> recipeList = Arrays.asList(
                 new Recipe().setTitle("Roast Beef")
                         .setIngredients(Set.of(
@@ -196,7 +196,7 @@ public class LunchServiceTest {
     }
 
     @Test
-    public void testGetRecipesExcludingIngredients(){
+    public void testGetRecipesExcludingIngredients() {
         List<Recipe> recipeList = Arrays.asList(
                 new Recipe().setTitle("Roast Beef")
                         .setIngredients(Set.of(
