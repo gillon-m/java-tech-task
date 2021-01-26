@@ -1,6 +1,6 @@
 package com.rezdy.lunch.exception;
 
-import com.rezdy.lunch.service.ErrorResponse;
+import com.rezdy.lunch.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

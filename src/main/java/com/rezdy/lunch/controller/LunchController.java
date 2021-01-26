@@ -1,7 +1,7 @@
 package com.rezdy.lunch.controller;
 
 import com.rezdy.lunch.service.LunchService;
-import com.rezdy.lunch.service.Recipe;
+import com.rezdy.lunch.dto.Recipe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;

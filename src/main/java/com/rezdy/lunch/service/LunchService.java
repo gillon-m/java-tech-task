@@ -1,13 +1,11 @@
 package com.rezdy.lunch.service;
 
+import com.rezdy.lunch.dto.Recipe;
 import com.rezdy.lunch.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
