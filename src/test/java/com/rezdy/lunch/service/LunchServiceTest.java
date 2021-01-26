@@ -18,8 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -52,7 +51,7 @@ public class LunchServiceTest {
                         ))
         );
         when(recipeRepository.findAll()).thenReturn(recipeList);
-        List<Recipe> nonExpiredRecipes = lunchService.getSortedNonExpiredRecipesOnDate(LocalDate.parse("2021-01-01"));
+        List<Recipe> nonExpiredRecipes = lunchService.getRecipes(LocalDate.parse("2021-01-01"));
         assertEquals("Parma", nonExpiredRecipes.get(0).getTitle());
         assertEquals("Roast Beef", nonExpiredRecipes.get(1).getTitle());
         assertFalse(nonExpiredRecipes.stream()
@@ -91,7 +90,7 @@ public class LunchServiceTest {
                         ))
         );
         when(recipeRepository.findAll()).thenReturn(recipeList);
-        List<Recipe> nonExpiredRecipes = lunchService.getSortedNonExpiredRecipesOnDate(LocalDate.parse("2021-01-01"));
+        List<Recipe> nonExpiredRecipes = lunchService.getRecipes(LocalDate.parse("2021-01-01"));
         assertEquals("Spam Salad", nonExpiredRecipes.get(0).getTitle());
         assertEquals("Parma", nonExpiredRecipes.get(1).getTitle());
         assertEquals("Roast Beef", nonExpiredRecipes.get(2).getTitle());
@@ -132,7 +131,7 @@ public class LunchServiceTest {
                         ))
         );
         when(recipeRepository.findAll()).thenReturn(recipeList);
-        List<Recipe> nonExpiredRecipes = lunchService.getSortedNonExpiredRecipesOnDate(LocalDate.parse("2021-01-01"));
+        List<Recipe> nonExpiredRecipes = lunchService.getRecipes(LocalDate.parse("2021-01-01"));
         assertEquals("Spam Salad", nonExpiredRecipes.get(0).getTitle());
         assertEquals("Almost Expired Parma", nonExpiredRecipes.get(1).getTitle());
         assertEquals("Roast Beef", nonExpiredRecipes.get(2).getTitle());
@@ -161,5 +160,71 @@ public class LunchServiceTest {
             assertEquals("Cannot find recipe for 'Dumplings'", e.getMessage());
         }
 
+    }
+
+    @Test
+    public void testGetRecipesIncludingIngredients(){
+        List<Recipe> recipeList = Arrays.asList(
+                new Recipe().setTitle("Roast Beef")
+                        .setIngredients(Set.of(
+                                new Ingredient().setTitle("Beef"),
+                                new Ingredient().setTitle("Cheese")
+                        )),
+                new Recipe().setTitle("Parma")
+                        .setIngredients(Set.of(
+                                new Ingredient().setTitle("Chicken"),
+                                new Ingredient().setTitle("Cheese")
+                        )),
+                new Recipe().setTitle("Beans and Rice")
+                        .setIngredients(Set.of(
+                                new Ingredient().setTitle("Beans"),
+                                new Ingredient().setTitle("Rice")
+                        )),
+                new Recipe().setTitle("Expired Milk")
+                        .setIngredients(Set.of(
+                                new Ingredient().setTitle("Milk"),
+                                new Ingredient().setTitle("Sugar")
+                        ))
+        );
+        when(recipeRepository.findAll()).thenReturn(recipeList);
+        List<Recipe> foundRecipes = lunchService.getRecipes(Set.of("Beans", "Cheese"), true);
+        List<String> recipeNames = foundRecipes.stream().map(Recipe::getTitle).collect(Collectors.toList());
+        assertTrue(recipeNames.contains("Roast Beef"));
+        assertTrue(recipeNames.contains("Parma"));
+        assertTrue(recipeNames.contains("Beans and Rice"));
+        assertFalse(recipeNames.contains("Expired Milk"));
+    }
+
+    @Test
+    public void testGetRecipesExcludingIngredients(){
+        List<Recipe> recipeList = Arrays.asList(
+                new Recipe().setTitle("Roast Beef")
+                        .setIngredients(Set.of(
+                                new Ingredient().setTitle("Beef"),
+                                new Ingredient().setTitle("Cheese")
+                        )),
+                new Recipe().setTitle("Parma")
+                        .setIngredients(Set.of(
+                                new Ingredient().setTitle("Chicken"),
+                                new Ingredient().setTitle("Cheese")
+                        )),
+                new Recipe().setTitle("Beans and Rice")
+                        .setIngredients(Set.of(
+                                new Ingredient().setTitle("Beans"),
+                                new Ingredient().setTitle("Rice")
+                        )),
+                new Recipe().setTitle("Expired Milk")
+                        .setIngredients(Set.of(
+                                new Ingredient().setTitle("Milk"),
+                                new Ingredient().setTitle("Sugar")
+                        ))
+        );
+        when(recipeRepository.findAll()).thenReturn(recipeList);
+        List<Recipe> foundRecipes = lunchService.getRecipes(Set.of("Beans", "Cheese"), false);
+        List<String> recipeNames = foundRecipes.stream().map(Recipe::getTitle).collect(Collectors.toList());
+        assertFalse(recipeNames.contains("Roast Beef"));
+        assertFalse(recipeNames.contains("Parma"));
+        assertFalse(recipeNames.contains("Beans and Rice"));
+        assertTrue(recipeNames.contains("Expired Milk"));
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,15 +21,24 @@ public class LunchService {
 
     private List<Recipe> recipesSorted;
 
-    public List<Recipe> getSortedNonExpiredRecipesOnDate(LocalDate date) {
+    public List<Recipe> getRecipes(LocalDate date) {
         List<Recipe> recipes = getNonExpiredRecipesOnDate(date);
         sortRecipes(recipes);
         return recipesSorted;
     }
 
+    public List<Recipe> getRecipes(Set<String> ingredients, boolean include) {
+        List<Recipe> recipes = recipeRepository.findAll();
+        return recipes.stream()
+                .filter(recipe -> include == recipe.getIngredients().stream()
+                        .map(Ingredient::getTitle)
+                        .anyMatch(ingredients::contains))
+                .collect(Collectors.toList());
+    }
+
     public Recipe getRecipe(String title) throws NotFoundException {
         return recipeRepository.findById(title)
-                .orElseThrow(() -> new NotFoundException("Cannot find recipe for '" + title +"'"));
+                .orElseThrow(() -> new NotFoundException("Cannot find recipe for '" + title + "'"));
     }
 
     private void sortRecipes(List<Recipe> recipes) {
