@@ -34,7 +34,7 @@ public class LunchServiceTest {
     @Test
     public void testGetNonExpiredRecipesOnDate() {
         List<Recipe> recipeList = Arrays.asList(
-                new Recipe().setTitle("Roast Beef")git a
+                new Recipe().setTitle("Roast Beef")
                         .setIngredients(Set.of(
                                 new Ingredient().setTitle("Beef").setBestBefore(LocalDate.parse("2020-05-10")).setUseBy(LocalDate.parse("2022-01-01")),
                                 new Ingredient().setTitle("Gravy").setBestBefore(LocalDate.parse("2020-05-11")).setUseBy(LocalDate.parse("2022-01-01"))
