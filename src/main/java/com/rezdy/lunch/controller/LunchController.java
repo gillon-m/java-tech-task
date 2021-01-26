@@ -22,6 +22,6 @@ public class LunchController {
 
     @GetMapping("/lunch")
     public List<Recipe> getRecipes(@RequestParam(value = "date") String date) {
-        return lunchService.getNonExpiredRecipesOnDate(LocalDate.parse(date));
+        return lunchService.getSortedNonExpiredRecipesOnDate(LocalDate.parse(date));
     }
 }

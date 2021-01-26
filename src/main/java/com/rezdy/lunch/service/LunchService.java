@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class LunchService {
@@ -19,8 +20,8 @@ public class LunchService {
 
     private List<Recipe> recipesSorted;
 
-    public List<Recipe> getNonExpiredRecipesOnDate(LocalDate date) {
-        List<Recipe> recipes = recipeRepository.loadRecipes(date);
+    public List<Recipe> getSortedNonExpiredRecipesOnDate(LocalDate date) {
+        List<Recipe> recipes = getNonExpiredRecipesOnDate(date);
 
         sortRecipes(recipes);
 
@@ -34,6 +35,20 @@ public class LunchService {
             return r1BestBefore.compareTo(r2BestBefore);
         });
         recipesSorted = recipes;
+    }
+
+    public List<Recipe> getNonExpiredRecipesOnDate(LocalDate date){
+        return recipeRepository.findAll().stream()
+                .filter(recipe -> {
+                    Set<Ingredient> ingredients = recipe.getIngredients();
+                    for(Ingredient i : ingredients){
+                        if(i.getUseBy() != null && i.getUseBy().compareTo(date)<0){
+                            return false;
+                        }
+                    }
+                    return true;
+                })
+                .collect(Collectors.toList());
     }
 
     private LocalDate getLowestBestBefore(Set<Ingredient> ingredients) {
