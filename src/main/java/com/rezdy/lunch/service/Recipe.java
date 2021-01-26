@@ -12,7 +12,7 @@ public class Recipe {
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "recipe_ingredient",
-            joinColumns = @JoinColumn(name = "title"),
+            joinColumns = @JoinColumn(name = "recipe"),
             inverseJoinColumns = @JoinColumn(name = "ingredient"))
     private Set<Ingredient> ingredients;
 
