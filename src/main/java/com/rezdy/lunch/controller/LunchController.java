@@ -21,7 +21,7 @@ public class LunchController {
         this.lunchService = lunchService;
     }
 
-    @GetMapping("recipes")
+    @GetMapping
     public List<Recipe> getRecipes(@RequestParam(value = "date") String date) {
         return lunchService.getRecipes(LocalDate.parse(date));
     }
